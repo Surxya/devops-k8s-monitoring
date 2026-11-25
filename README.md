@@ -60,6 +60,37 @@ devops-k8s-monitoring/
 - **Prometheus & Grafana Observability:** Deployed `kube-prometheus-stack` in the `monitoring` namespace, built a custom **DevOps App Overview** Grafana dashboard tracking pod CPU, working-set memory, and available replicas, validated CPU quota spikes under synthetic load, and authored a `PrometheusRule` (`devops-app-alerts`) verified live by inducing a CrashLoopBackOff pod (`DevOpsAppPodCrashLooping` firing state).
 - **Live Cloud Deployment on AWS EC2 (k3s):** Automated single-node k3s and Helm 3 provisioning (`aws-k3s-demo/deploy-k3s.sh`) on Ubuntu EC2, exposing `/health` and `/hello` publicly via NodePort `30080`.
 
+## Components
+
+| Component | Purpose |
+|---|---|
+| `devops-app` (Java) | Sample microservice exposing `/health` and `/hello` |
+| Helm chart (`helm/devops-app`) | Parameterized Deployment, Service, ConfigMap, probes |
+| kind | 3-node local cluster (1 control-plane, 2 workers) |
+| k3s on AWS EC2 | Single-node cloud demo |
+| kube-prometheus-stack | Prometheus, Alertmanager, Grafana, kube-state-metrics |
+| `scripts/` | Health audit and smoke test automation |
+
+## Probes & Rollout Strategy
+
+- **Readiness probe (`/health`):** a pod only receives Service traffic once it responds, so a rolling update never routes requests to a pod that isn't ready.
+- **Liveness probe (`/health`):** the kubelet restarts a container that stops responding.
+- **Rolling update:** `helm upgrade` replaces pods gradually, keeping the old replicas serving until the new ones are ready (zero downtime).
+- **Rollback:** `helm history devops-app -n devops-app` lists revisions, and `helm rollback devops-app <REVISION> -n devops-app` restores a previous one.
+
+## Monitoring
+
+- `kube-prometheus-stack` runs in the `monitoring` namespace.
+- The **DevOps App Overview** Grafana dashboard (`monitoring/dashboards/devops-app.json`) tracks pod CPU, working-set memory, and available replicas.
+- `monitoring/alert-rules.yaml` defines CrashLoopBackOff, NotReady, and HighMemory alerts. `DevOpsAppPodCrashLooping` was verified firing by deliberately inducing a crash loop.
+
+## Lessons Learned
+
+- Probes and resource limits are what make rollouts and alerts meaningful; without them Kubernetes can't tell a healthy pod from a broken one.
+- Validating alerts by inducing a real failure is more convincing than just applying the rule.
+- Packaging manifests as a Helm chart made the same app deployable on both kind and k3s with minimal changes.
+- Keeping cloud demos scripted (`deploy-k3s.sh`) makes them cheap to recreate and cheap to tear down.
+
 ---
 ## Quickstart & Verification
 
