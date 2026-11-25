@@ -90,8 +90,18 @@ curl -i "http://<EC2_PUBLIC_IP>:30080/hello?name=AWS-k3s"
 
 | Milestone | Evidence File |
 |---|---|
-| Baseline Grafana Kubernetes pod CPU & memory utilization | [baseline-grafana-view.png](docs/screenshots/baseline-grafana-view.png) |
-| Grafana CPU utilization surge under synthetic load testing | [grafana-load-test-cpu-spike.png](docs/screenshots/grafana-load-test-cpu-spike.png) |
-| Prometheus PromQL CPU, working-set memory, and restart graphs | [PromQL-Queries.pdf](docs/screenshots/PromQL-Queries.pdf) |
-| Firing `DevOpsAppPodCrashLooping` alert in Prometheus UI | [DevOpsAppPodCrashLooping.png](docs/screenshots/DevOpsAppPodCrashLooping.png) |
-| Live AWS EC2 k3s public NodePort application endpoint | [aws-k3s-live-demo.png](docs/screenshots/aws-k3s-live-demo.png) |
+| Baseline Grafana Kubernetes pod CPU & memory utilization | <img width="959" height="576" alt="baseline Grafana view" src="https://github.com/user-attachments/assets/3580aea2-57a0-4a94-bd4f-08ea39288a84" />
+
+
+| Grafana CPU utilization surge under synthetic load testing | <img width="953" height="571" alt="grafana-load-test-cpu-spike" src="https://github.com/user-attachments/assets/e4411daf-c255-457a-9a64-bc36014939b2" />
+
+
+| Prometheus PromQL CPU, working-set memory, and restart graphs | [PromQL Queries.pdf](https://github.com/user-attachments/files/35410232/PromQL.Queries.pdf)
+
+
+| Firing `DevOpsAppPodCrashLooping` alert in Prometheus UI | <img width="956" height="567" alt="DevOpsAppPodCrashLooping" src="https://github.com/user-attachments/assets/fa5b0df0-4db2-41dd-a83d-9fa645b1bec0" />
+
+
+| Live AWS EC2 k3s public NodePort application endpoint | <img width="956" height="572" alt="aws-k3s-live-demo" src="https://github.com/user-attachments/assets/095a0394-2128-4a89-8e51-b9caee38e51d" />
+
+
