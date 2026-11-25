@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: devops-app-alerts
+  labels:
+    release: monitoring
+  namespace: monitoring
+spec:
+  groups:
+    - name: devops-app.rules
+      rules:
+        - alert: DevOpsAppPodCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total{namespace="devops-app"}[10m]) > 2
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Pod {{ $labels.pod }} is restarting repeatedly"
+        - alert: DevOpsAppNotReady
+          expr: kube_pod_status_ready{namespace="devops-app",condition="true"} == 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.pod }} has not been Ready for 2 minutes"
+        - alert: DevOpsAppHighMemory
+          expr: sum by (pod) (container_memory_working_set_bytes{namespace="devops-app",container="app"}) > 400 * 1024 * 1024
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.pod }} uses more than 400 Mb"
